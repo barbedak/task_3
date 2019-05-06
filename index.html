@@ -1,16 +1,16 @@
 <html>
     <head>
-        <meta charset="utf-8">
+        <meta charset = "utf-8">
         <title>Task 3</title>
-        <style type="text/css">
+        <style type = "text/css">
             table{
                 width: 280px;
                 height: 280px;
                 border-spacing: 0;
-                
             }
             td {
                 border: 1px solid lightgrey;
+                background-color: white;
             }
             form{
                 width: 300px;
@@ -19,43 +19,75 @@
             }
         </style>
         <script>
+            var arrCells = [];
+            var arrColor = ["red","fuchsia","blue","orange","green","aqua","yellow","gray"];
 
+            function rand(){
+                var x = 0;
+                var p = 0;
+                var f = false; //флаг генерировать новый x?
+                x = Math.floor(Math.random() * arrColor.length);
+                for (var i = 0; i < 16; i++){
+                    if (arrCells[i] == x){
+                        if (p == 1){
+                            f = true;
+                        } else {
+                            p++;
+                        }
+                    } 
+                }
+                if (f == true){
+                    x = rand();
+                } else {
+                    return x;
+                }
+                return x;
+            }
+
+            function find_a_pair(){
+                var start_time=Date.now();
+
+                for (var i = 0; i < 16; i++){
+                    arrCells.push(rand());
+                    
+                }
+                return alert("Вы выиграли!\nЗатраченное время: "+start_time +" \n"+arrCells);
+            }
         </script>
     </head>
     <body>
-
         <form>
             <table>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id = "Cell1"></td>
+                    <td id = "Cell2"></td>
+                    <td id = "Cell3"></td>
+                    <td id = "Cell4"></td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id = "Cell5"></td>
+                    <td id = "Cell6"></td>
+                    <td id = "Cell7"></td>
+                    <td id = "Cell8"></td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id = "Cell9"></td>
+                    <td id = "Cell10"></td>
+                    <td id = "Cell11"></td>
+                    <td id = "Cell12"></td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td id = "Cell13"></td>
+                    <td id = "Cell14"></td>
+                    <td id = "Cell15"></td>
+                    <td id = "Cell16"></td>
                 </tr>
             </table>
             <br>
-            <input type="submit" value="Старт" onclick="">
+            <input type = "submit" value = "Старт" onclick = "find_a_pair()">
             <br>
             <br>
-            <span>00:00.000</span>
+            <span id = "timer">00:00.000</span>
         </form>
     </body>
 </html>
