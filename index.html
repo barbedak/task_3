@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
     <head>
         <meta charset = "utf-8">
@@ -19,72 +20,133 @@
             }
         </style>
         <script>
-            var arrCells = [];
-            var arrColor = ["red","fuchsia","blue","orange","green","aqua","yellow","gray"];
+            var arrCells = [];                                              //цвета ячеек
+            var arrInitColor = [];                                          //цвета рубашки ячеек, по умолчанию = белый
+            var arrColor = ["red","fuchsia","blue","orange","green",
+                            "aqua","yellow","gray"];                        //список используемых цветов
+            var idOpenCell = 0;                                             //id ячейки с которой сравниваем текущую ячейку
 
+            //заполняем массив цветов ячеек
+            for (var i = 0; i < 16; i++) {
+                    arrCells.push( rand() );
+                    arrInitColor.push("white");
+                }
+            
+            function start() {
+                startTime = Date.now();
+            }
+
+            function InitCellColor(){
+                for (var i = 1; i < 17; i++) {
+                    document.getElementById('Cell' + i).style.backgroundColor = arrInitColor[i-1];
+                }
+            }
+
+            //подсчет найденных пар
+            function counting_pair(){
+                var result=0;
+
+                for (var i = 0; i < 16; i++){
+                    if (arrInitColor[i] != "white"){
+                        result++;
+                    }
+                }
+
+                return result;
+            }
+
+            function find_pair(idCell) {
+                var cointPair= counting_pair();
+                var elem = document.getElementById('Cell' + idCell);
+                InitCellColor();
+                    
+                if (elem.style.backgroundColor == "white") {
+                    alert(elem.style.backgroundColor);
+                    elem.style.backgroundColor = arrColor[ arrCells[+idCell-1] ]; //открываем ячейку
+                        
+                    if (idOpenCell == 0) {                                        //если нет открытых ячеек
+                        idOpenCell = idCell;                                      //запоминаем id открытой ячейки
+                        arrInitColor[+idCell-1] = elem.style.backgroundColor;     //меняем цвет рубашки для этой ячейки
+                        InitCellColor();
+                    } else {                                                      //ячейка уже открыта, сравниваем цвет с ней
+                            
+                        if (elem.style.backgroundColor == 
+                            document.getElementById('Cell' + idOpenCell).style.backgroundColor) {
+                            arrInitColor[+idCell-1] = elem.style.backgroundColor; //цвет совпал, меняем рубашку
+                            idOpenCell = 0;                                   
+                            InitCellColor();
+
+                            if (cointPair == 15) {                                //если открыты все ячейки выводим поздравление
+                                alert("Вы выиграли!\nЗатраченное время:");
+                            }
+
+                        } else {                                                  //цвет не совпал
+                            arrInitColor[+idCell-1] = "white";                    //делаем дефолтную рубашку
+                            arrInitColor[+idOpenCell-1] = "white";                //дефолтная рубашка для открытой ячейки
+                            idOpenCell = 0;                                       //сбрасываем счетчик открытых ячеек
+                            setTimeout(InitCellColor, 500);                       //задержка, чтобы показать ячейку
+                        }
+                    }
+                } 
+            }
+
+            //рандомное значение - номер элемента массива arrColor
             function rand(){
-                var x = 0;
+                var x = Math.floor(Math.random() * arrColor.length);
                 var p = 0;
                 var f = false; //флаг генерировать новый x?
-                x = Math.floor(Math.random() * arrColor.length);
-                for (var i = 0; i < 16; i++){
-                    if (arrCells[i] == x){
-                        if (p == 1){
+                
+                for (var i = 0; i < 16; i++) {
+                    if (arrCells[i] == x) {
+                        if (p == 1) {
                             f = true;
                         } else {
                             p++;
                         }
                     } 
                 }
-                if (f == true){
+                
+                if (f == true) {
                     x = rand();
                 } else {
                     return x;
                 }
+                
                 return x;
             }
-
-            function find_a_pair(){
-                var start_time=Date.now();
-
-                for (var i = 0; i < 16; i++){
-                    arrCells.push(rand());
-                    
-                }
-                return alert("Вы выиграли!\nЗатраченное время: "+start_time +" \n"+arrCells);
-            }
+            
         </script>
     </head>
     <body>
         <form>
             <table>
                 <tr>
-                    <td id = "Cell1"></td>
-                    <td id = "Cell2"></td>
-                    <td id = "Cell3"></td>
-                    <td id = "Cell4"></td>
+                    <td id = "Cell1" onclick = "find_pair('1')"></td>
+                    <td id = "Cell2" onclick = "find_pair('2')"></td>
+                    <td id = "Cell3" onclick = "find_pair('3')"></td>
+                    <td id = "Cell4" onclick = "find_pair('4')"></td>
                 </tr>
                 <tr>
-                    <td id = "Cell5"></td>
-                    <td id = "Cell6"></td>
-                    <td id = "Cell7"></td>
-                    <td id = "Cell8"></td>
+                    <td id = "Cell5" onclick = "find_pair('5')"></td>
+                    <td id = "Cell6" onclick = "find_pair('6')"></td>
+                    <td id = "Cell7" onclick = "find_pair('7')"></td>
+                    <td id = "Cell8" onclick = "find_pair('8')"></td>
                 </tr>
                 <tr>
-                    <td id = "Cell9"></td>
-                    <td id = "Cell10"></td>
-                    <td id = "Cell11"></td>
-                    <td id = "Cell12"></td>
+                    <td id = "Cell9" onclick = "find_pair('9')"></td>
+                    <td id = "Cell10" onclick = "find_pair('10')"></td>
+                    <td id = "Cell11" onclick = "find_pair('11')"></td>
+                    <td id = "Cell12" onclick = "find_pair('12')"></td>
                 </tr>
                 <tr>
-                    <td id = "Cell13"></td>
-                    <td id = "Cell14"></td>
-                    <td id = "Cell15"></td>
-                    <td id = "Cell16"></td>
+                    <td id = "Cell13" onclick = "find_pair('13')"></td>
+                    <td id = "Cell14" onclick = "find_pair('14')"></td>
+                    <td id = "Cell15" onclick = "find_pair('15')"></td>
+                    <td id = "Cell16" onclick = "find_pair('16')"></td>
                 </tr>
             </table>
             <br>
-            <input type = "submit" value = "Старт" onclick = "find_a_pair()">
+            <input type = "submit" value = "Старт" onclick = "start()">
             <br>
             <br>
             <span id = "timer">00:00.000</span>
