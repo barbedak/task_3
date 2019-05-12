@@ -25,20 +25,32 @@
             var arrColor = ["red","fuchsia","blue","orange","green",
                             "aqua","yellow","gray"];                        //список используемых цветов
             var idOpenCell = 0;                                             //id ячейки с которой сравниваем текущую ячейку
+            var startTime = 0;                                              //время начала отсчета
 
-            //заполняем массив цветов ячеек
-            for (var i = 0; i < 16; i++) {
-                    arrCells.push( rand() );
-                    arrInitColor.push("white");
-                }
             
-            function start() {
-                startTime = Date.now();
-            }
+            //обнуляем и заполняем массив цветов ячеек, обнуляем массив рубашек ячеек
+            function resetCellsColor(){
+                arrInitColor = [];                                          
+                arrCells = [];
+                for (var i = 0; i < 16; i++) {
+                        arrCells.push( rand() );                            //случайный цвет ячейки
+                        arrInitColor.push("white");                         //дефолтная белая рубашка
+                    }
+                }
 
+            //запуск таймера
+            function start(){
+                var date= new Date();
+                window.startTime = date.getTime();
+                document.getElementById("timer").innerHTML = '00:00.000';
+                resetCellsColor();                                           //генерим цвета ячеек
+                InitCellColor();                                             //отрисовываем рубашки
+            }
+            
+            //отрисовываем рубашки
             function InitCellColor(){
                 for (var i = 1; i < 17; i++) {
-                    document.getElementById('Cell' + i).style.backgroundColor = arrInitColor[i-1];
+                    document.getElementById("Cell" + i).style.backgroundColor = arrInitColor[i-1];
                 }
             }
 
@@ -55,12 +67,41 @@
                 return result;
             }
 
-            function find_pair(idCell) {
-                var cointPair= counting_pair();
+            //вычисляем затраченное время
+            function calcDiffTime(){
+                var date = new Date();
+                var diffTime = date.getTime() - window.startTime;       //затраченное время в милисекундах
+                var m = Math.floor(diffTime/60000);                     //минуты
+                var sec = Math.floor((diffTime - m * 60000)/1000);      //секунды
+                var ms = diffTime - sec * 1000 - m * 60000;             //милисекунды
+                result = '';
+                
+                //приводим к виду 00:00.000
+                if (m > 9 && m < 60){
+                    result = m + ':';
+                } else if (m < 10 && m > 0){    
+                    result = '0'+ m +':';
+                } else{
+                    result = '00:'
+                }
+                if (sec > 9 && sec < 60){
+                    result = result + sec + '.' + ms;
+                } else if( sec>0 && sec<10 ){
+                    result = result + '0' + sec + '.' + ms;
+                }else {
+                    result = result + '00.' + ms; 
+                }
+                               
+                return result;
+            }
+
+            function find_pair(idCell, startTime) {
+                var diffTime = '';
+                var cointPair = counting_pair();
                 var elem = document.getElementById('Cell' + idCell);
                 InitCellColor();
                     
-                if (elem.style.backgroundColor == "white") {
+                if ( (elem.style.backgroundColor == "white") && (window.startTime > 0) ) {
                     elem.style.backgroundColor = arrColor[ arrCells[+idCell-1] ]; //открываем ячейку
                         
                     if (idOpenCell == 0) {                                        //если нет открытых ячеек
@@ -75,8 +116,10 @@
                             idOpenCell = 0;                                   
                             InitCellColor();
 
-                            if (cointPair == 15) {                                //если открыты все ячейки выводим поздравление
-                                alert("Вы выиграли!\nЗатраченное время:");
+                            if (cointPair == 15) {                                //если открыты все ячейки, выводим поздравление
+                                diffTime = calcDiffTime();                        //получаем затраченое время в виде 00:00.000
+                                alert("Вы выиграли!\nЗатраченное время: " + diffTime);
+                                document.getElementById("timer").innerHTML = diffTime;
                             }
 
                         } else {                                                  //цвет не совпал
@@ -86,7 +129,9 @@
                             setTimeout(InitCellColor, 500);                       //задержка, чтобы показать ячейку
                         }
                     }
-                } 
+                } else { 
+                    
+                }
             }
 
             //рандомное значение - номер элемента массива arrColor
@@ -145,7 +190,7 @@
                 </tr>
             </table>
             <br>
-            <input type = "submit" value = "Старт" onclick = "start()">
+            <input type = "button" value = "Старт" onclick="start()">
             <br>
             <br>
             <span id = "timer">00:00.000</span>
